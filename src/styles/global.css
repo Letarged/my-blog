@@ -1,3 +1,5 @@
+@import "tailwindcss";
+
 /* ─── Geist Sans ──────────────────────────────────────────────────────────── */
 
 @font-face {
@@ -59,10 +61,6 @@
   font-style: italic;
   font-display: swap;
 }
-
-/* ─── Tailwind v4 ─────────────────────────────────────────────────────────── */
-
-@import "tailwindcss";
 
 /* ─── Static Design Tokens (theme-invariant) ──────────────────────────────── */
 

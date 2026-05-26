@@ -9,6 +9,10 @@ import cloudflare from '@astrojs/cloudflare';
 export default defineConfig({
   site: 'https://c0rvex.com',
 
+build: {
+    inlineStylesheets: 'never',  
+  },
+
   integrations: [
     // Note: MDX component overrides (e.g. pre → CodeBlock) are passed at
     // render time via <Content components={{ pre: CodeBlock }} /> in each

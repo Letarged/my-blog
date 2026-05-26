@@ -1,4 +1,5 @@
 ---
+import '../../styles/global.css';
 import { TAG_META, type TagSlug } from '../../lib/tags';
 import { getPublishedByTaxonomyTag } from '../../lib/posts';
 import { SITE_TITLE } from '../../consts';
@@ -36,7 +37,7 @@ function formatDate(date: Date): string {
 	<body>
 		<SiteHeader />
 
-		<main class="tag-page" data-pagefind-ignore>
+		<main class="tag-page" data-pagefind-body>
 			<p class="back">
 				<a href="/tags">← All tags</a>
 			</p>

@@ -1,4 +1,5 @@
 ---
+import '../styles/global.css';
 import { getPublishedPosts } from '../lib/posts';
 import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 import BaseHead from '../components/BaseHead.astro';
@@ -29,7 +30,7 @@ function readTime(body: string | undefined): string {
 	<body>
 		<SiteHeader />
 
-		<main class="home">
+		<main class="home" data-pagefind-body>
 			{!featured ? (
 				<p class="empty">No published posts yet.</p>
 			) : (

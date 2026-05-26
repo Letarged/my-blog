@@ -1,4 +1,5 @@
 ---
+import '../../styles/global.css';
 import { getTagsByAxis, type TagSlug } from '../../lib/tags';
 import { getTagPostCounts } from '../../lib/posts';
 import { SITE_TITLE } from '../../consts';
@@ -28,7 +29,7 @@ const techniqueTags = getTagsByAxis('technique').map(([slug, meta]) => ({
 	<body>
 		<SiteHeader />
 
-		<main class="tags-page" data-pagefind-ignore>
+		<main class="tags-page" data-pagefind-body>
 			<div class="tags-header">
 				<h1 class="page-title">Tags</h1>
 				<p class="page-desc">

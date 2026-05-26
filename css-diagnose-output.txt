@@ -1,0 +1,224 @@
+CSS DIAGNOSTICS
+Run at: 2026-05-26 12:33:43
+PWD:    /home/mike/projects/my-blog
+
+──────────────────────────────────────────────────
+1. VITE CACHE — node_modules/.vite exists?
+──────────────────────────────────────────────────
+EXISTS — 2369 files in cache
+Will be cleared in step: rm -rf node_modules/.vite
+
+──────────────────────────────────────────────────
+2. CURRENT dist/client/_astro/*.css — before clean build
+──────────────────────────────────────────────────
+  SiteFooter.DhI3zDRC.css                          17778 bytes  mtime=12:16:05
+  _slug_.Bx11-Ed4.css                              11990 bytes  mtime=12:16:05
+  _tag_.D9lqcc7a.css                                4099 bytes  mtime=12:16:05
+
+──────────────────────────────────────────────────
+3. CSS <link> tags in dist/client/index.html — before clean build
+──────────────────────────────────────────────────
+  /_astro/SiteFooter.DhI3zDRC.css
+  /pagefind/pagefind-ui.css
+
+──────────────────────────────────────────────────
+4. LAYOUT CLASSES in built CSS — before clean build
+──────────────────────────────────────────────────
+  NONE   in SiteFooter.DhI3zDRC.css
+  NONE   in _slug_.Bx11-Ed4.css
+  NONE   in _tag_.D9lqcc7a.css
+
+──────────────────────────────────────────────────
+5. STYLE BLOCK SUMMARY — source files
+──────────────────────────────────────────────────
+  src/pages/index.astro
+    rules: 20  classes: home, featured, eyebrow, dot, featured__title, featured__excerpt, recent__list, recent__item
+  src/pages/about.astro
+    rules: 25  classes: about-page, about-header, about-name, about-tagline, about-section, section-label, cert-list, cert-card
+  src/pages/findings.astro
+    rules: 10  classes: list-page, list-title, list-desc, post-list, empty
+  src/pages/notes.astro
+    rules: 8  classes: list-page, list-title, list-desc, post-list, empty
+  src/pages/writeups.astro
+    rules: 8  classes: list-page, list-title, list-desc, post-list, empty
+  src/pages/now.astro
+    rules: 9  classes: prose-page, updated
+  src/pages/disclaimer.astro
+    rules: 12  classes: prose-page
+  src/pages/404.astro
+    rules: 9  classes: not-found, error-code
+  src/pages/tags/index.astro
+    rules: 26  classes: tags-page, tags-header, page-title, page-desc, axis-section, axis-label, axis-badge, axis-badge--domain
+  src/pages/tags/[tag].astro
+    rules: 34  classes: tag-page, back, tag-header, tag-meta-row, axis-badge, axis-badge--domain, axis-badge--technique, ref-link
+
+──────────────────────────────────────────────────
+6. CLEARING VITE CACHE AND REBUILDING
+──────────────────────────────────────────────────
+Removing node_modules/.vite ...
+Removing dist/ ...
+Running npm run build ...
+
+> my-blog@0.0.1 build
+> node scripts/strip-exif.mjs && astro check && astro build
+
+[strip-exif] No images found in public/images/ — nothing to do.
+12:33:46 [@astrojs/cloudflare] Enabling image processing with Cloudflare Images for production with the "IMAGES" Images binding.
+12:33:46 [@astrojs/cloudflare] Enabling sessions with Cloudflare KV with the "SESSION" KV binding.
+12:33:50 [content] Syncing content
+12:33:50 [content] Synced content
+12:33:50 [vite]   ➜  Tunnel closed
+12:33:51 [types] Generated 4.53s
+12:33:51 [check] Getting diagnostics for Astro files in /home/mike/projects/my-blog...
+Result (43 files): 
+- 0 errors
+- 0 warnings
+- 0 hints
+
+12:33:54 [vite]   ➜  Tunnel closed
+12:33:56 [@astrojs/cloudflare] Enabling image processing with Cloudflare Images for production with the "IMAGES" Images binding.
+12:33:56 [@astrojs/cloudflare] Enabling sessions with Cloudflare KV with the "SESSION" KV binding.
+12:33:59 [content] Syncing content
+12:33:59 [content] Synced content
+12:33:59 [vite]   ➜  Tunnel closed
+12:33:59 [types] Generated 3.22s
+12:33:59 [build] output: "static"
+12:33:59 [build] mode: "server"
+12:33:59 [build] directory: /home/mike/projects/my-blog/dist/
+12:33:59 [build] adapter: @astrojs/cloudflare
+12:33:59 [build] Collecting build info...
+12:33:59 [build] ✓ Completed in 3.27s.
+12:33:59 [build] Building server entrypoints...
+12:34:02 [vite]   ➜  Tunnel closed
+12:34:02 [vite] ✓ built in 2.88s
+12:34:03 [vite]   ➜  Tunnel closed
+12:34:03 [vite] ✓ built in 980ms
+12:34:03 [vite]   ➜  Tunnel closed
+12:34:03 [vite] ✓ built in 37ms
+Default inspector port 9229 not available, using 9230 instead
+
+
+ prerendering static routes 
+✨ Parsed 7 valid header rules.
+✨ Parsed 7 valid header rules.
+12:34:04   ├─ /404.html (+44ms) 
+12:34:04   ├─ /about/index.html (+26ms) 
+12:34:04   ├─ /disclaimer/index.html (+23ms) 
+12:34:04   ├─ /findings/index.html (+24ms) 
+12:34:04   ├─ /notes/index.html (+20ms) 
+12:34:04   ├─ /now/index.html (+22ms) 
+12:34:04   ├─ /posts/_example-writeup/index.html (+38ms) 
+12:34:04   ├─ /rss.xml (+34ms) 
+12:34:04   ├─ /tags/web/index.html (+23ms) 
+12:34:04   ├─ /tags/network/index.html (+16ms) 
+12:34:04   ├─ /tags/active-directory/index.html (+16ms) 
+12:34:04   ├─ /tags/linux/index.html (+17ms) 
+12:34:04   ├─ /tags/windows/index.html (+15ms) 
+12:34:04   ├─ /tags/cloud/index.html (+27ms) 
+12:34:04   ├─ /tags/mobile/index.html (+38ms) 
+12:34:04   ├─ /tags/iot/index.html (+31ms) 
+12:34:04   ├─ /tags/crypto/index.html (+13ms) 
+12:34:04   ├─ /tags/forensics/index.html (+12ms) 
+12:34:04   ├─ /tags/reversing/index.html (+12ms) 
+12:34:04   ├─ /tags/osint/index.html (+12ms) 
+12:34:04   ├─ /tags/api/index.html (+14ms) 
+12:34:04   ├─ /tags/container/index.html (+13ms) 
+12:34:04   ├─ /tags/database/index.html (+11ms) 
+12:34:04   ├─ /tags/sqli/index.html (+14ms) 
+12:34:04   ├─ /tags/xss/index.html (+14ms) 
+12:34:04   ├─ /tags/rce/index.html (+12ms) 
+12:34:05   ├─ /tags/privesc/index.html (+11ms) 
+12:34:05   ├─ /tags/lfi/index.html (+12ms) 
+12:34:05   ├─ /tags/ssrf/index.html (+13ms) 
+12:34:05   ├─ /tags/xxe/index.html (+11ms) 
+12:34:05   ├─ /tags/ssti/index.html (+11ms) 
+12:34:05   ├─ /tags/auth-bypass/index.html (+12ms) 
+12:34:05   ├─ /tags/deserialization/index.html (+11ms) 
+12:34:05   ├─ /tags/path-traversal/index.html (+11ms) 
+12:34:05   ├─ /tags/command-injection/index.html (+11ms) 
+12:34:05   ├─ /tags/buffer-overflow/index.html (+13ms) 
+12:34:05   ├─ /tags/brute-force/index.html (+11ms) 
+12:34:05   ├─ /tags/lateral-movement/index.html (+11ms) 
+12:34:05   ├─ /tags/index.html (+20ms) 
+12:34:05   ├─ /writeups/index.html (+12ms) 
+12:34:05   ├─ /index.html (+13ms) 
+12:34:05 [vite]   ➜  Tunnel closed
+12:34:05 ✓ Completed in 1.25s.
+
+12:34:05 [build] Rearranging server assets...
+12:34:05 [build] ✓ Completed in 5.26s.
+12:34:05 [@astrojs/sitemap] `sitemap-index.xml` created at `dist/client`
+12:34:05 [build] Server built in 8.55s
+12:34:05 [build] Complete!
+12:34:05 [vite]   ➜  Tunnel closed
+
+> my-blog@0.0.1 postbuild
+> pagefind --site dist/client
+
+
+Running Pagefind v1.5.2 (Extended)
+Running from: "/home/mike/projects/my-blog"
+Source:       "dist/client"
+Output:       "dist/client/pagefind"
+
+[Walking source directory]
+Found 40 files matching **/*.{html}
+
+[Parsing files]
+Found a data-pagefind-body element on the site.
+↳ Ignoring pages without this tag.
+
+[Reading languages]
+Discovered 1 language: en
+
+[Building search indexes]
+Total: 
+  Indexed 1 language
+  Indexed 36 pages
+  Indexed 537 words
+  Indexed 0 filters
+  Indexed 0 sorts
+
+Finished in 0.040 seconds
+
+──────────────────────────────────────────────────
+7. CSS FILES AFTER CLEAN BUILD
+──────────────────────────────────────────────────
+  SiteFooter.CBE5JM-n.css                          17805 bytes  mtime=12:34:02
+  _slug_.Bx11-Ed4.css                              11990 bytes  mtime=12:34:02
+  _tag_.D9lqcc7a.css                                4099 bytes  mtime=12:34:02
+
+──────────────────────────────────────────────────
+8. LAYOUT CLASSES in CSS — after clean build
+──────────────────────────────────────────────────
+  NONE   in SiteFooter.CBE5JM-n.css
+  NONE   in _slug_.Bx11-Ed4.css
+  NONE   in _tag_.D9lqcc7a.css
+
+  Total layout class matches across all CSS files: 0
+  *** PROBLEM: CSS not being compiled into build output ***
+
+──────────────────────────────────────────────────
+9. CSS <link> tags in index.html — after clean build
+──────────────────────────────────────────────────
+  /_astro/SiteFooter.CBE5JM-n.css
+  /pagefind/pagefind-ui.css
+
+──────────────────────────────────────────────────
+10. CSS <link> tags in about/index.html — after clean build
+──────────────────────────────────────────────────
+  /_astro/SiteFooter.CBE5JM-n.css
+  /pagefind/pagefind-ui.css
+
+──────────────────────────────────────────────────
+11. PAGEFIND after clean build
+──────────────────────────────────────────────────
+{"version":"1.5.2","languages":{"en":{"hash":"en_4a423aa4a5","wasm":"en","page_count":36}},"include_characters":["_","‿","⁀","⁔","︳","︴","﹍","﹎","﹏","＿"]}
+
+──────────────────────────────────────────────────
+12. CSP wasm-unsafe-eval check
+──────────────────────────────────────────────────
+PASS — wasm-unsafe-eval present in _headers
+
+  CSP line:
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'wasm-unsafe-eval' 'sha256-7080T7ngD4dFMoG0lZ4N7KRetScvj/ZWZFgVrJY4OIs=' 'sha256-vs9mL/DWNaMGnv5ZBo+FwmW0IgmOf9YxRY1+Y84oT8M=' https://giscus.app; style-src 'self'; img-src 'self' data: https:; font-src 'self'; frame-src https://giscus.app; frame-ancestors 'none'; connect-src 'self' https://giscus.app; object-src 'none'

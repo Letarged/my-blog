@@ -1,4 +1,5 @@
 ---
+import '../styles/global.css';
 import { getPublishedByCategory } from '../lib/posts';
 import { SITE_TITLE } from '../consts';
 import BaseHead from '../components/BaseHead.astro';
@@ -21,7 +22,7 @@ const posts = await getPublishedByCategory('finding');
 	<body>
 		<SiteHeader />
 
-		<main class="list-page">
+		<main class="list-page" data-pagefind-body>
 			<h1 class="list-title">Findings</h1>
 			<p class="list-desc">
 				Real-world engagement notes. All client identifiers, hostnames, and IP ranges

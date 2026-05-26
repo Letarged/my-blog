@@ -1,4 +1,5 @@
 ---
+import '../styles/global.css';
 import { getPublishedByCategory } from '../lib/posts';
 import { SITE_TITLE } from '../consts';
 import BaseHead from '../components/BaseHead.astro';
@@ -21,7 +22,7 @@ const posts = await getPublishedByCategory('note');
 	<body>
 		<SiteHeader />
 
-		<main class="list-page">
+		<main class="list-page" data-pagefind-body>
 			<h1 class="list-title">Notes</h1>
 			<p class="list-desc">Short technical notes — things I learned, commands I keep forgetting, tools worth documenting.</p>
 
