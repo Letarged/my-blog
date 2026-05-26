@@ -1,0 +1,542 @@
+---
+import type { PostCategory } from '../lib/posts';
+import { estimateReadTime } from '../lib/posts';
+import type { DomainTagSlug, TechniqueTagSlug } from '../lib/tags';
+import BaseHead from '../components/BaseHead.astro';
+import SiteHeader from '../components/ui/SiteHeader.astro';
+import SiteFooter from '../components/ui/SiteFooter.astro';
+import Comments from '../components/ui/Comments.astro';
+import DraftBadge from '../components/ui/DraftBadge.astro';
+import { SITE_TITLE } from '../consts';
+
+interface Props {
+	title: string;
+	excerpt: string;
+	date: Date;
+	category: PostCategory;
+	domainTags:    DomainTagSlug[];
+	techniqueTags: TechniqueTagSlug[];
+	difficulty?: 'easy' | 'medium' | 'hard' | 'insane';
+	box_status?: 'active' | 'retired' | 'n/a';
+	cover?: string | null;
+	draft: boolean;
+	body?: string; // raw content for reading-time estimation
+}
+
+const {
+	title,
+	excerpt,
+	date,
+	category,
+	domainTags,
+	techniqueTags,
+	difficulty,
+	box_status,
+	cover,
+	draft,
+	body,
+} = Astro.props;
+
+// Combined for sidebar / eyebrow display
+const allTags = [...domainTags, ...techniqueTags] as string[];
+
+const readTime = estimateReadTime(body);
+
+function formatDateShort(d: Date): string {
+	return d.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+}
+---
+
+<html lang="en" data-pagefind-ignore={draft ? "all" : undefined}>
+	<head>
+		<BaseHead
+			title={`${title} — ${SITE_TITLE}`}
+			description={excerpt}
+			image={cover ?? undefined}
+		/>
+		<link rel="preload" as="font" type="font/woff2" crossorigin href="/fonts/GeistSans-400.woff2" />
+		<link rel="preload" as="font" type="font/woff2" crossorigin href="/fonts/GeistSans-600.woff2" />
+		<link rel="preload" as="font" type="font/woff2" crossorigin href="/fonts/JetBrainsMono-400.woff2" />
+	</head>
+	<body>
+		<SiteHeader>
+			<!-- Hamburger: only visible <1024px via CSS; opens sidebar drawer -->
+			<button
+				slot="header-left"
+				type="button"
+				id="sidebar-hamburger"
+				class="sidebar-hamburger"
+				aria-label="Open tags sidebar"
+			>
+				<svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+					<path d="M2 4h12M2 8h12M2 12h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+				</svg>
+			</button>
+		</SiteHeader>
+
+		<!-- Mobile sidebar drawer — contains same tag list as desktop sidebar -->
+		<dialog id="sidebar-drawer" class="sidebar-drawer" aria-label="Post tags">
+			<div class="sidebar-drawer__panel">
+				<div class="sidebar-drawer__header">
+					<span class="sidebar-drawer__title">Tags</span>
+					<button type="button" id="sidebar-close" class="sidebar-close" aria-label="Close tags">
+						<svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+							<path d="M1 1l10 10M11 1L1 11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+						</svg>
+					</button>
+				</div>
+				{allTags.length > 0 && (
+					<ul class="sidebar-drawer__tags">
+						{allTags.map((tag) => (
+							<li>
+								<a href={`/tags/${tag}`} class="sidebar-drawer__tag">{tag}</a>
+							</li>
+						))}
+					</ul>
+				)}
+				{box_status && box_status !== 'n/a' && (
+					<p class="sidebar-drawer__status">{box_status}</p>
+				)}
+			</div>
+		</dialog>
+
+		{draft && (
+			<div class="draft-banner">
+				<DraftBadge />
+			</div>
+		)}
+
+		<div class="post-shell">
+			<!-- Desktop left meta column -->
+			<aside class="post-meta" aria-label="Post metadata">
+				{allTags.length > 0 && (
+					<ul class="meta-tags">
+						{allTags.map((tag) => (
+							<li>
+								<a href={`/tags/${tag}`} class="meta-tag">
+									{tag}
+								</a>
+							</li>
+						))}
+					</ul>
+				)}
+				{box_status && box_status !== 'n/a' && (
+					<p class="meta-item">{box_status}</p>
+				)}
+			</aside>
+
+			<!-- Main article column -->
+			<article class="post-article" data-pagefind-body>
+				<!-- Above title: date · tags (mobile shows here; desktop shows in sidebar) -->
+				<p class="post-eyebrow">
+					<time datetime={date.toISOString()}>{formatDateShort(date)}</time>
+					{allTags.length > 0 && (
+						<>
+							<span class="dot" aria-hidden="true">·</span>
+							<span class="eyebrow-tags">
+								{allTags.slice(0, 3).join(', ')}
+							</span>
+						</>
+					)}
+				</p>
+
+				<h1 class="post-title">{title}</h1>
+
+				<!-- Below title: reading time · category -->
+				<p class="post-submeta">
+					{readTime && <span>{readTime}</span>}
+					{readTime && <span class="dot" aria-hidden="true">·</span>}
+					<span>{category}</span>
+					{difficulty && (
+						<>
+							<span class="dot" aria-hidden="true">·</span>
+							<span>{difficulty}</span>
+						</>
+					)}
+				</p>
+
+				<!-- Lede / excerpt -->
+				<p class="post-lede">{excerpt}</p>
+
+				{cover && (
+					<img src={cover} alt="" role="presentation" loading="lazy" class="post-cover" />
+				)}
+
+				<!-- Prose body -->
+				<div class="prose">
+					<slot />
+				</div>
+			</article>
+		</div>
+
+		<div class="post-comments">
+			<Comments title={title} />
+		</div>
+
+		<SiteFooter />
+
+	<!-- Sidebar drawer toggle — connects hamburger, drawer, and close button -->
+	<script is:inline src="/sidebar-toggle.js" defer></script>
+	</body>
+</html>
+
+<style>
+	/* ── Draft banner ── */
+	.draft-banner {
+		padding: 0.5rem 2rem;
+		background: rgba(146, 64, 14, 0.06);
+		border-bottom: 1px solid rgba(146, 64, 14, 0.2);
+		display: flex;
+		justify-content: center;
+	}
+
+	/* ── Shell: single column mobile, 2-col desktop ── */
+	.post-shell {
+		max-width: 68ch;
+		margin-inline: auto;
+		padding: 3rem 1.5rem 0;
+	}
+
+	.post-meta {
+		display: none; /* hidden on mobile; shown in desktop grid */
+	}
+
+	/* ── Eyebrow (mobile only — desktop uses sidebar) ── */
+	.post-eyebrow {
+		font-family: 'JetBrains Mono', ui-monospace, monospace;
+		font-size: 0.6875rem;
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
+		color: var(--text-muted);
+		margin: 0 0 1.5rem;
+		display: flex;
+		align-items: center;
+		flex-wrap: wrap;
+		gap: 0.375rem;
+	}
+
+	.dot {
+		opacity: 0.4;
+	}
+
+	.eyebrow-tags {
+		font-style: normal;
+	}
+
+	/* ── Title ── */
+	.post-title {
+		font-size: clamp(1.875rem, 4vw, 2.75rem);
+		font-weight: 600;
+		letter-spacing: -0.02em;
+		line-height: 1.15;
+		margin: 0 0 1rem;
+		color: var(--text-primary);
+	}
+
+	/* ── Sub-meta ── */
+	.post-submeta {
+		font-family: 'JetBrains Mono', ui-monospace, monospace;
+		font-size: 0.75rem;
+		color: var(--text-muted);
+		margin: 0 0 1.5rem;
+		display: flex;
+		align-items: center;
+		flex-wrap: wrap;
+		gap: 0.375rem;
+	}
+
+	/* ── Lede ── */
+	.post-lede {
+		font-size: 1.125rem;
+		line-height: 1.6;
+		color: var(--text-secondary);
+		margin: 0 0 2.5rem;
+	}
+
+	/* ── Cover image ── */
+	.post-cover {
+		width: 100%;
+		margin-bottom: 2.5rem;
+		border: 1px solid var(--border);
+	}
+
+	/* ── Prose ── */
+	.prose {
+		max-width: 100%;
+	}
+
+	.prose :global(h2) {
+		font-size: 1.5rem;
+		margin-top: 3rem;
+		margin-bottom: 1rem;
+	}
+
+	.prose :global(h3) {
+		font-size: 1.125rem;
+		margin-top: 2.5rem;
+		margin-bottom: 0.75rem;
+	}
+
+	.prose :global(h4) {
+		font-size: 1rem;
+		margin-top: 2rem;
+		margin-bottom: 0.5rem;
+	}
+
+	.prose :global(p) {
+		margin: 0 0 1.5rem;
+		color: var(--text-secondary);
+	}
+
+	.prose :global(ul),
+	.prose :global(ol) {
+		margin: 0 0 1.5rem;
+		padding-left: 1.5rem;
+		color: var(--text-secondary);
+	}
+
+	.prose :global(li) {
+		margin-bottom: 0.375rem;
+	}
+
+	.prose :global(hr) {
+		width: 4ch;
+		border: none;
+		border-top: 1px solid var(--border);
+		margin: 4rem auto;
+	}
+
+	.prose :global(blockquote) {
+		border: none;
+		font-style: italic;
+		margin: 1.5rem 0 1.5rem 2rem;
+		padding: 0;
+		color: var(--text-secondary);
+	}
+
+	.prose :global(a) {
+		color: var(--accent);
+		text-underline-offset: 3px;
+		text-decoration-thickness: 1px;
+	}
+
+	.prose :global(a:hover) {
+		color: var(--accent-hover);
+		text-decoration-thickness: 2px;
+	}
+
+	.prose :global(table) {
+		margin: 1.5rem 0;
+	}
+
+	/* ── Comments ── */
+	.post-comments {
+		max-width: 68ch;
+		margin-inline: auto;
+		padding: 0 1.5rem 4rem;
+	}
+
+	/* ── Desktop 2-column layout ── */
+	@media (min-width: 1024px) {
+		.post-shell {
+			max-width: calc(10rem + 4rem + 68ch);
+			padding: 4rem 2rem 0;
+			display: grid;
+			grid-template-columns: 10rem 68ch;
+			gap: 0 4rem;
+			align-items: start;
+		}
+
+		.post-meta {
+			display: block;
+			grid-column: 1;
+			grid-row: 1;
+			padding-top: 3.25rem; /* align with first line of content */
+			position: sticky;
+			top: 5rem;
+		}
+
+		.post-article {
+			grid-column: 2;
+		}
+
+		/* Hide mobile eyebrow tags (shown in sidebar) */
+		.eyebrow-tags {
+			display: none;
+		}
+
+		.post-comments {
+			max-width: calc(10rem + 4rem + 68ch);
+			padding: 0 2rem 4rem calc(10rem + 4rem + 2rem);
+		}
+	}
+
+	/* ── Desktop meta sidebar styles ── */
+	.meta-tags {
+		list-style: none;
+		padding: 0;
+		margin: 0 0 1.5rem;
+	}
+
+	.meta-tag {
+		display: block;
+		font-family: 'JetBrains Mono', ui-monospace, monospace;
+		font-size: 0.75rem;
+		color: var(--text);
+		text-decoration: none;
+		padding: 0.2rem 0;
+		line-height: 1.5;
+		transition: color 150ms var(--ease-out);
+	}
+
+	.meta-tag:hover {
+		color: var(--accent);
+	}
+
+	/* Section labels (RETIRED / ACTIVE) stay faint — they're status, not navigation */
+	.meta-item {
+		font-family: 'JetBrains Mono', ui-monospace, monospace;
+		font-size: 0.6875rem;
+		color: var(--text-faint);
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
+		margin: 0 0 0.5rem;
+	}
+
+	/* ── Mobile hamburger button ── */
+	.sidebar-hamburger {
+		all: unset;
+		width: 32px;
+		height: 32px;
+		display: grid;
+		place-items: center;
+		cursor: pointer;
+		color: var(--text-muted);
+		border-radius: var(--radius-md);
+		transition: color 150ms var(--ease-out);
+		flex-shrink: 0;
+	}
+
+	.sidebar-hamburger:hover { color: var(--text); }
+	.sidebar-hamburger:focus-visible {
+		outline: 2px solid var(--accent);
+		outline-offset: 2px;
+	}
+
+	/* Hamburger only visible on mobile — desktop uses inline sidebar */
+	@media (min-width: 1024px) {
+		.sidebar-hamburger { display: none; }
+	}
+
+	/* ── Mobile sidebar drawer ── */
+	.sidebar-drawer {
+		position: fixed;
+		inset: 0;
+		margin: 0;
+		padding: 0;
+		border: none;
+		background: transparent;
+		width: 100%;
+		height: 100%;
+		max-width: 100%;
+		max-height: 100%;
+	}
+
+	.sidebar-drawer[open] {
+		display: flex;
+		align-items: stretch;
+		justify-content: flex-start;
+	}
+
+	:global(#sidebar-drawer::backdrop) {
+		background: rgba(0, 0, 0, 0.55);
+	}
+
+	:global(html[data-theme="light"] #sidebar-drawer::backdrop) {
+		background: rgba(26, 26, 26, 0.35);
+	}
+
+	.sidebar-drawer__panel {
+		background: var(--bg);
+		border-right: 1px solid var(--border);
+		width: min(280px, 80vw);
+		height: 100%;
+		padding: 1.5rem;
+		overflow-y: auto;
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
+	}
+
+	@media (prefers-reduced-motion: no-preference) {
+		.sidebar-drawer__panel {
+			animation: slideInLeft 200ms var(--ease-out) both;
+		}
+
+		@keyframes slideInLeft {
+			from { transform: translateX(-100%); opacity: 0; }
+			to   { transform: translateX(0);    opacity: 1; }
+		}
+	}
+
+	.sidebar-drawer__header {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+	}
+
+	.sidebar-drawer__title {
+		font-family: 'JetBrains Mono', ui-monospace, monospace;
+		font-size: 0.6875rem;
+		font-weight: 600;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		color: var(--text-faint);
+	}
+
+	.sidebar-close {
+		all: unset;
+		width: 1.5rem;
+		height: 1.5rem;
+		display: grid;
+		place-items: center;
+		cursor: pointer;
+		color: var(--text-muted);
+		border-radius: var(--radius-sm);
+		transition: color 150ms var(--ease-out);
+	}
+
+	.sidebar-close:hover { color: var(--text); }
+	.sidebar-close:focus-visible {
+		outline: 2px solid var(--accent);
+		outline-offset: 2px;
+	}
+
+	.sidebar-drawer__tags {
+		list-style: none;
+		padding: 0;
+		margin: 0;
+	}
+
+	.sidebar-drawer__tag {
+		display: block;
+		font-family: 'JetBrains Mono', ui-monospace, monospace;
+		font-size: 0.8125rem;
+		color: var(--text);
+		text-decoration: none;
+		padding: 0.35rem 0;
+		border-bottom: 1px solid var(--border);
+		transition: color 150ms var(--ease-out);
+	}
+
+	.sidebar-drawer__tag:hover { color: var(--accent); }
+
+	.sidebar-drawer__status {
+		font-family: 'JetBrains Mono', ui-monospace, monospace;
+		font-size: 0.6875rem;
+		color: var(--text-faint);
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
+		margin: 0;
+	}
+</style>

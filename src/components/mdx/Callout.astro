@@ -1,0 +1,63 @@
+---
+interface Props {
+	type: 'note' | 'warning' | 'danger' | 'tip' | 'opsec';
+}
+
+const { type } = Astro.props;
+
+const config = {
+	note:    { label: 'Note' },
+	warning: { label: 'Warning' },
+	danger:  { label: 'Danger' },
+	tip:     { label: 'Tip' },
+	opsec:   { label: 'OpSec' },
+} as const;
+
+const { label } = config[type];
+---
+
+<aside class={`callout callout--${type}`} role="note">
+	<span class="callout__label">{label}</span>
+	<div class="callout__body"><slot /></div>
+</aside>
+
+<style>
+	.callout {
+		border-left: 2px solid;
+		border-radius: 0 var(--radius-md) var(--radius-md) 0;
+		padding: 0.875rem 1.25rem;
+		background: var(--surface);
+		margin: 1.5rem 0;
+	}
+
+	.callout--note    { border-color: var(--text-faint); }
+	.callout--warning { border-color: #b45309; }
+	.callout--danger  { border-color: #dc2626; }
+	.callout--tip     { border-color: var(--accent); }
+
+	/* opsec: heavier border, slight accent tint */
+	.callout--opsec {
+		border-color: var(--accent-hover);
+		border-left-width: 3px;
+		background: var(--accent-faint);
+	}
+
+	.callout__label {
+		display: block;
+		font-family: 'JetBrains Mono', ui-monospace, monospace;
+		font-size: 0.6875rem;
+		font-weight: 600;
+		letter-spacing: 0.06em;
+		text-transform: uppercase;
+		margin-bottom: 0.4rem;
+	}
+
+	.callout--note    .callout__label { color: var(--text-faint); }
+	.callout--warning .callout__label { color: #b45309; }
+	.callout--danger  .callout__label { color: #dc2626; }
+	.callout--tip     .callout__label { color: var(--accent); }
+	.callout--opsec   .callout__label { color: var(--accent-hover); }
+
+	.callout__body { font-size: 0.9375rem; line-height: 1.65; }
+	.callout__body :global(p:last-child) { margin-bottom: 0; }
+</style>

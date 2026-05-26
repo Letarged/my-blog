@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About — rajecky.sec</title>
+  <meta name="description" content="Penetration tester based in Slovakia. HTB CPTS, CWES. Offensive security: network, web application, Active Directory, AI-augmented methodology.">
+  <style>
+
+    /* ── Reset ──────────────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    img { display: block; max-width: 100%; }
+
+    /* ── Tokens ─────────────────────────────────────────────────────── */
+    :root {
+      --bg:            #0d0d0d;
+      --surface:       #141414;
+      --surface-alt:   #1a1a1a;
+      --border:        #222222;
+      --border-strong: #333333;
+      --border-accent: #2c5040;
+      --text:          #d0d0d0;
+      --text-muted:    #6e6e6e;
+      --text-dim:      #404040;
+      --accent:        #5a9272;
+      --accent-hi:     #6aab84;
+      --font-mono:     ui-monospace, 'Cascadia Code', 'Source Code Pro',
+                       Menlo, Monaco, Consolas, monospace;
+      --font-body:     Georgia, 'Times New Roman', serif;
+    }
+
+    html {
+      color-scheme: dark;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-body);
+      font-size: 1rem;
+      line-height: 1.75;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    a { color: var(--accent-hi); text-decoration: none; }
+    a:hover { text-decoration: underline; text-underline-offset: 3px; }
+
+    /* ── Header / Nav ───────────────────────────────────────────────── */
+    header {
+      border-bottom: 1px solid var(--border);
+    }
+
+    nav {
+      max-width: 720px;
+      margin-inline: auto;
+      padding-inline: 1.5rem;
+      height: 3rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .nav-brand {
+      font-family: var(--font-mono);
+      font-size: 0.8125rem;
+      color: var(--accent-hi);
+      letter-spacing: 0.02em;
+    }
+
+    .nav-brand:hover { text-decoration: none; opacity: 0.85; }
+
+    .nav-links {
+      list-style: none;
+      display: flex;
+      gap: 1.5rem;
+    }
+
+    .nav-links a {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+    }
+
+    .nav-links a:hover { color: var(--text); text-decoration: none; }
+    .nav-links a[aria-current="page"] { color: var(--accent-hi); text-decoration: none; }
+
+    /* ── Main layout ────────────────────────────────────────────────── */
+    main {
+      max-width: 720px;
+      margin-inline: auto;
+      padding: 3.5rem 1.5rem 5rem;
+    }
+
+    /* ── Page title ─────────────────────────────────────────────────── */
+    .page-title {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      font-weight: normal;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: var(--accent);
+      margin-bottom: 1.75rem;
+    }
+
+    /* ── Intro ──────────────────────────────────────────────────────── */
+    .intro p {
+      font-size: 1rem;
+      color: var(--text);
+      margin-bottom: 1.25em;
+    }
+    .intro p:last-child { margin-bottom: 0; }
+
+    /* ── Sections ───────────────────────────────────────────────────── */
+    section {
+      margin-top: 3rem;
+      padding-top: 3rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .section-label {
+      display: block;
+      font-family: var(--font-mono);
+      font-size: 0.6375rem;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: var(--accent);
+      margin-bottom: 1.25rem;
+    }
+
+    /* ── Certification cards ────────────────────────────────────────── */
+    .cert-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+
+    @media (min-width: 540px) {
+      .cert-grid { grid-template-columns: 1fr 1fr; }
+    }
+
+    .cert-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 2px solid var(--accent);
+      padding: 1.25rem 1.25rem 1.125rem;
+    }
+
+    .cert-logo {
+      height: 22px;
+      width: auto;
+      margin-bottom: 1rem;
+      opacity: 0.82;
+    }
+
+    .cert-abbr {
+      display: block;
+      font-family: var(--font-mono);
+      font-size: 0.5875rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--accent-hi);
+      margin-bottom: 0.3rem;
+    }
+
+    .cert-title {
+      font-size: 0.9375rem;
+      color: var(--text);
+      line-height: 1.45;
+      margin-bottom: 0.5rem;
+    }
+
+    .cert-issuer {
+      font-family: var(--font-mono);
+      font-size: 0.5875rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      margin-bottom: 1rem;
+    }
+
+    .verify-btn {
+      display: inline-block;
+      font-family: var(--font-mono);
+      font-size: 0.5875rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--accent);
+      border: 1px solid var(--border-accent);
+      padding: 0.25rem 0.625rem;
+    }
+
+    .verify-btn:hover {
+      border-color: var(--accent);
+      color: var(--accent-hi);
+      text-decoration: none;
+    }
+
+    /* ── HTB profile ────────────────────────────────────────────────── */
+    .htb-profile-link {
+      display: inline-block;
+      font-family: var(--font-mono);
+      font-size: 0.8125rem;
+      color: var(--accent-hi);
+      margin-bottom: 1.125rem;
+    }
+
+    .htb-badge-img {
+      max-width: 200px;
+      border: 1px solid var(--border);
+    }
+
+    /* ── LinkedIn ───────────────────────────────────────────────────── */
+    .linkedin-entry {
+      font-size: 0.9375rem;
+      color: var(--text-muted);
+    }
+
+    /* ── Work list ──────────────────────────────────────────────────── */
+    .work-list {
+      border-top: 1px solid var(--border);
+    }
+
+    .work-item {
+      padding: 1.125rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .work-term {
+      display: block;
+      font-family: var(--font-mono);
+      font-size: 0.6375rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text);
+      margin-bottom: 0.5rem;
+    }
+
+    .work-desc {
+      font-size: 0.9375rem;
+      color: var(--text-muted);
+      line-height: 1.7;
+    }
+
+    /* ── Status ─────────────────────────────────────────────────────── */
+    .status-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    .status-row {
+      display: grid;
+      grid-template-columns: 5.5rem 1fr;
+      gap: 0 1rem;
+    }
+
+    .status-key {
+      font-family: var(--font-mono);
+      font-size: 0.6rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--accent);
+      padding-top: 0.2rem;
+      line-height: 1.75;
+    }
+
+    .status-val {
+      font-size: 0.9375rem;
+      color: var(--text);
+      line-height: 1.7;
+    }
+
+    @media (max-width: 400px) {
+      .status-row {
+        grid-template-columns: 1fr;
+        gap: 0.25rem;
+      }
+    }
+
+    /* ── PGP fingerprint ────────────────────────────────────────────── */
+    .pgp-block {
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      padding: 0.75rem 1rem;
+    }
+
+    .pgp-meta {
+      display: block;
+      font-family: var(--font-mono);
+      font-size: 0.5625rem;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--text-dim);
+      margin-bottom: 0.5rem;
+    }
+
+    .pgp-fingerprint {
+      font-family: var(--font-mono);
+      font-size: 0.8125rem;
+      color: var(--text-muted);
+      letter-spacing: 0.06em;
+      word-break: break-all;
+      line-height: 1.65;
+    }
+
+    /* ── Footer ─────────────────────────────────────────────────────── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 1.25rem 1.5rem;
+    }
+
+    .footer-inner {
+      max-width: 720px;
+      margin-inline: auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.375rem;
+    }
+
+    footer p {
+      font-family: var(--font-mono);
+      font-size: 0.575rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-dim);
+    }
+
+    /* ── Mobile ─────────────────────────────────────────────────────── */
+    @media (max-width: 480px) {
+      .nav-links { gap: 1rem; }
+      main { padding-top: 2.5rem; }
+    }
+
+  </style>
+</head>
+<body>
+
+<!-- ── Header ─────────────────────────────────────────────────────────── -->
+<header>
+  <nav aria-label="Main navigation">
+    <!-- TODO: Replace "rajecky.sec" with your actual blog name if different. -->
+    <a href="/" class="nav-brand">rajecky.sec</a>
+    <ul class="nav-links" role="list">
+      <li><a href="/">Home</a></li>
+      <li><a href="/about" aria-current="page">About</a></li>
+      <li><a href="/posts">Posts</a></li>
+      <li><a href="/contact">Contact</a></li>
+    </ul>
+  </nav>
+</header>
+
+<!-- ── Main ───────────────────────────────────────────────────────────── -->
+<main>
+
+  <h1 class="page-title">About</h1>
+
+  <!-- ── Intro ──────────────────────────────────────────────────────── -->
+  <div class="intro">
+    <p>
+      I am a certified penetration tester based in Slovakia, holding the HTB Certified
+      Penetration Testing Specialist (CPTS) and HTB Certified Web Exploitation Specialist
+      (CWES) credentials. My work centres on offensive security across three domains:
+      network infrastructure assessments, web application testing, and Active Directory
+      attack path analysis, with a growing focus on integrating AI tooling into the
+      enumeration and reporting workflow.
+    </p>
+    <p>
+      I work with clients and practice environments internationally. My methodology
+      starts with exhaustive enumeration before any exploitation attempt. Every
+      assumption gets documented; every finding is paired with a tested remediation path
+      and delivered in a structured, reproducible report.
+    </p>
+  </div>
+
+  <!-- ── Certifications ───────────────────────────────────────────────── -->
+  <section aria-labelledby="cert-label">
+    <span class="section-label" id="cert-label">Certifications</span>
+
+    <div class="cert-grid">
+
+      <!-- CPTS card -->
+      <div class="cert-card">
+        <!--
+          TODO: Replace the src below with the actual HTB CPTS certification badge image.
+          HackTheBox logo/badge assets are available from:
+            https://www.hackthebox.com/press
+          Or use the badge image from your HTB profile / certificate page.
+          Recommended: a transparent-background PNG, ~48px tall.
+        -->
+        <img
+          src="https://www.hackthebox.eu/images/logo-htb.png"
+          alt="HackTheBox"
+          class="cert-logo"
+          width="80"
+          height="22"
+          loading="lazy"
+        >
+        <span class="cert-abbr">HTB CPTS</span>
+        <p class="cert-title">HackTheBox Certified Penetration Testing Specialist</p>
+        <p class="cert-issuer">Issued by HackTheBox</p>
+        <!--
+          TODO: Replace the href below with your actual CPTS certificate verification URL.
+          The URL format is typically:
+            https://www.hackthebox.com/certificate/YOUR_CERTIFICATE_ID
+          Do not publish this link until you have replaced the placeholder value.
+        -->
+        <a
+          href="https://www.hackthebox.com/certificate/CPTS"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="verify-btn"
+          aria-label="Verify HTB CPTS certificate — opens in new tab"
+        >Verify &rarr;</a>
+      </div>
+
+      <!-- CWES card -->
+      <div class="cert-card">
+        <!--
+          TODO: Replace the src below with the actual HTB CWES certification badge image.
+          Same source as CPTS — HTB press kit or your certificate page.
+        -->
+        <img
+          src="https://www.hackthebox.eu/images/logo-htb.png"
+          alt="HackTheBox"
+          class="cert-logo"
+          width="80"
+          height="22"
+          loading="lazy"
+        >
+        <span class="cert-abbr">HTB CWES</span>
+        <p class="cert-title">HackTheBox Certified Web Exploitation Specialist</p>
+        <p class="cert-issuer">Issued by HackTheBox</p>
+        <!--
+          TODO: Replace the href below with your actual CWES certificate verification URL.
+          Same format: https://www.hackthebox.com/certificate/YOUR_CERTIFICATE_ID
+        -->
+        <a
+          href="https://www.hackthebox.com/certificate/CWES"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="verify-btn"
+          aria-label="Verify HTB CWES certificate — opens in new tab"
+        >Verify &rarr;</a>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ── HackTheBox ───────────────────────────────────────────────────── -->
+  <section aria-labelledby="htb-label">
+    <span class="section-label" id="htb-label">HackTheBox</span>
+
+    <a
+      href="https://profile.hackthebox.com/profile/019de467-1fbc-70ed-ae18-7ecefc0188cb/"
+      target="_blank"
+      rel="noopener noreferrer"
+      class="htb-profile-link"
+    >profile.hackthebox.com &rarr;</a>
+
+    <!--
+      TODO: Replace PROFILE_ID in the src attribute with your numeric HTB profile ID.
+      Find it in your HTB profile URL:
+        https://www.hackthebox.com/profile/YOUR_NUMERIC_ID  (the number at the end)
+      The badge image URL is:
+        https://www.hackthebox.eu/badge/image/YOUR_NUMERIC_ID
+      Example: https://www.hackthebox.eu/badge/image/391588
+    -->
+    <img
+      src="https://www.hackthebox.eu/badge/image/PROFILE_ID"
+      alt="HackTheBox rank badge"
+      class="htb-badge-img"
+      width="200"
+      loading="lazy"
+    >
+  </section>
+
+  <!-- ── LinkedIn ─────────────────────────────────────────────────────── -->
+  <section aria-labelledby="linkedin-label">
+    <span class="section-label" id="linkedin-label">LinkedIn</span>
+    <p class="linkedin-entry">
+      <!--
+        TODO: Replace PLACEHOLDER in both the href and link text with your
+        actual LinkedIn username/handle. Example: https://linkedin.com/in/john-doe
+      -->
+      <a
+        href="https://linkedin.com/in/PLACEHOLDER"
+        target="_blank"
+        rel="noopener noreferrer"
+      >linkedin.com/in/PLACEHOLDER</a>
+    </p>
+  </section>
+
+  <!-- ── What I work on ───────────────────────────────────────────────── -->
+  <section aria-labelledby="work-label">
+    <span class="section-label" id="work-label">What I work on</span>
+
+    <div class="work-list" role="list">
+
+      <div class="work-item" role="listitem">
+        <span class="work-term">Penetration Testing</span>
+        <p class="work-desc">
+          Primary professional focus. Network infrastructure assessments, web application
+          security testing, and Active Directory attack path analysis for clients.
+          Findings are structured and delivered via SysReptor &mdash; reproducible,
+          scope-accurate, with tested remediation guidance at every step.
+        </p>
+      </div>
+
+      <div class="work-item" role="listitem">
+        <span class="work-term">URBIN Technical Advisory</span>
+        <p class="work-desc">
+          Part-time CTO advisory for a small Slovak company. Scope covers technical
+          organisational structure, tooling decisions, and guiding pragmatic AI
+          integration into existing business workflows.
+        </p>
+      </div>
+
+      <div class="work-item" role="listitem">
+        <span class="work-term">Security Monitoring Analyst</span>
+        <p class="work-desc">
+          Continuous security monitoring and incident investigations. Malware behaviour
+          analysis, detection of network anomalies, and response to endpoint threats
+          across managed environments.
+        </p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ── Current status ───────────────────────────────────────────────── -->
+  <section aria-labelledby="status-label">
+    <span class="section-label" id="status-label">Current status</span>
+
+    <div class="status-list">
+
+      <div class="status-row">
+        <span class="status-key">Currently</span>
+        <p class="status-val">
+          Building an independent reputation as a penetration tester. Active on
+          HackTheBox labs and conducting client assessments concurrently.
+        </p>
+      </div>
+
+      <div class="status-row">
+        <span class="status-key">Next</span>
+        <p class="status-val">
+          Seeking mid-sized offensive security engagements. Open to collaborations
+          with small European security teams and bug bounty programs with clearly
+          defined scopes.
+        </p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ── PGP ──────────────────────────────────────────────────────────── -->
+  <section aria-labelledby="pgp-label">
+    <span class="section-label" id="pgp-label">PGP</span>
+
+    <div class="pgp-block">
+      <span class="pgp-meta">Public key fingerprint</span>
+      <!--
+        TODO: Replace the fingerprint below with your actual PGP public key fingerprint.
+        A fingerprint is 40 hexadecimal characters, commonly displayed in 4-char groups.
+        Retrieve it with: gpg --fingerprint your@email.com
+        Optionally, add a link to a key server or a hosted /pubkey.asc file.
+        Format example:
+          DEAD BEEF CAFE 1234 5678  ABCD EF01 2345 6789 ABCD
+      -->
+      <code class="pgp-fingerprint">XXXX XXXX XXXX XXXX XXXX &nbsp;XXXX XXXX XXXX XXXX XXXX</code>
+    </div>
+  </section>
+
+</main>
+
+<!-- ── Footer ─────────────────────────────────────────────────────────── -->
+<footer>
+  <div class="footer-inner">
+    <!-- TODO: Update year if needed. -->
+    <p>&copy; 2026 rajecky.sec</p>
+    <p>No trackers. No analytics.</p>
+  </div>
+</footer>
+
+</body>
+</html>

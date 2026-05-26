@@ -1,0 +1,127 @@
+---
+import { SITE_TITLE } from '../consts';
+import BaseHead from '../components/BaseHead.astro';
+import SiteHeader from '../components/ui/SiteHeader.astro';
+import SiteFooter from '../components/ui/SiteFooter.astro';
+---
+
+<html lang="en" data-pagefind-ignore="all">
+	<head>
+		<BaseHead
+			title={`Disclaimer — ${SITE_TITLE}`}
+			description="Responsible disclosure policy and legal disclaimer."
+		/>
+		<link rel="preload" as="font" type="font/woff2" crossorigin href="/fonts/GeistSans-400.woff2" />
+		<link rel="preload" as="font" type="font/woff2" crossorigin href="/fonts/GeistSans-600.woff2" />
+	</head>
+	<body>
+		<SiteHeader />
+
+		<main class="prose-page" data-pagefind-ignore>
+			<h1>Disclaimer</h1>
+
+			<h2>Responsible Disclosure</h2>
+			<p>
+				All content on this site is published in good faith and for educational purposes only.
+				Techniques described are performed against systems I own, systems with explicit written
+				authorisation, or purpose-built lab environments (HackTheBox, TryHackMe, VulnHub, etc.).
+			</p>
+			<p>
+				If you believe any content describes a vulnerability in a system you operate, contact
+				me via GitHub Discussions before taking any other action.
+			</p>
+
+			<h2>Anonymisation Policy</h2>
+			<p>Real-world engagement findings are published only after:</p>
+			<ul>
+				<li>All client names, logos, and project codenames are removed.</li>
+				<li>Internal hostnames, IP ranges, and Active Directory domain names are replaced with generic placeholders (<code>target.htb</code>, <code>10.10.x.x</code>).</li>
+				<li>Screenshots are reviewed and any credentials, tokens, or identifying session data are redacted.</li>
+				<li>EXIF metadata is stripped from all images before publication.</li>
+				<li>Sufficient time has passed that the vulnerability has been remediated.</li>
+			</ul>
+
+			<h2>No Warranty</h2>
+			<p>
+				The information on this site is provided "as is" without warranty of any kind.
+				The author is not responsible for any misuse of the techniques described here.
+				Performing security testing without written authorisation is illegal in most jurisdictions.
+			</p>
+		</main>
+
+		<SiteFooter />
+	</body>
+</html>
+
+<style>
+	.prose-page {
+		max-width: 68ch;
+		margin-inline: auto;
+		padding: 3rem 1.5rem 6rem;
+	}
+
+	.prose-page h1 {
+		font-size: 1.5rem;
+		font-weight: 600;
+		letter-spacing: -0.02em;
+		color: var(--text-primary);
+		margin: 0 0 1.75rem;
+	}
+
+	.prose-page h2 {
+		font-size: 1.0625rem;
+		font-weight: 600;
+		color: var(--text-primary);
+		margin: 2rem 0 0.75rem;
+	}
+
+	.prose-page p,
+	.prose-page ul {
+		font-size: 1rem;
+		color: var(--text-secondary);
+		line-height: 1.7;
+		margin: 0 0 1.25rem;
+	}
+
+	.prose-page ul {
+		padding-left: 1.5rem;
+	}
+
+	.prose-page li {
+		margin-bottom: 0.4rem;
+	}
+
+	.prose-page code {
+		font-family: 'JetBrains Mono', ui-monospace, monospace;
+		font-size: 0.875em;
+		background: var(--surface);
+		border: 1px solid var(--border);
+		border-radius: 3px;
+		padding: 0.1em 0.35em;
+	}
+
+	.prose-page a {
+		color: var(--accent);
+		text-underline-offset: 3px;
+		text-decoration-thickness: 1px;
+	}
+
+	.prose-page a:hover {
+		color: var(--accent-hover);
+	}
+
+	@media (min-width: 1024px) {
+		.prose-page {
+			max-width: calc(10rem + 2rem + 68ch);
+			padding: 4rem 2rem 6rem;
+		}
+
+		.prose-page h1,
+		.prose-page h2,
+		.prose-page p,
+		.prose-page ul {
+			margin-left: 12rem;
+			max-width: 68ch;
+		}
+	}
+</style>

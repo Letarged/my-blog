@@ -1,0 +1,90 @@
+---
+interface Props {
+	title: string;
+}
+
+const { title } = Astro.props;
+
+const config = {
+	repo:             import.meta.env.GISCUS_REPO        ?? '',
+	repoId:           import.meta.env.GISCUS_REPO_ID     ?? '',
+	category:         import.meta.env.GISCUS_CATEGORY    ?? 'Announcements',
+	categoryId:       import.meta.env.GISCUS_CATEGORY_ID ?? '',
+	mapping:          'pathname',
+	strict:           '1',
+	reactionsEnabled: '1',
+	emitMetadata:     '0',
+	inputPosition:    'top',
+	theme:            'transparent_dark',
+	lang:             'en',
+};
+---
+
+<section class="comments" aria-label={`Comments for ${title}`}>
+	<h2 class="comments__heading">Discussion</h2>
+	<div id="giscus-container" data-giscus={JSON.stringify(config)}></div>
+</section>
+
+<script>
+	const container = document.getElementById('giscus-container') as HTMLElement | null;
+	if (!container) throw new Error('[Comments] giscus-container not found');
+
+	let loaded = false;
+
+	function loadGiscus(): void {
+		if (loaded) return;
+		loaded = true;
+
+		const cfg = JSON.parse(container!.dataset.giscus ?? '{}') as Record<string, string>;
+
+		const s = document.createElement('script');
+		s.src          = 'https://giscus.app/client.js';
+		s.async        = true;
+		s.crossOrigin  = 'anonymous';
+		s.setAttribute('data-repo',               cfg.repo ?? '');
+		s.setAttribute('data-repo-id',            cfg.repoId ?? '');
+		s.setAttribute('data-category',           cfg.category ?? '');
+		s.setAttribute('data-category-id',        cfg.categoryId ?? '');
+		s.setAttribute('data-mapping',            cfg.mapping ?? 'pathname');
+		s.setAttribute('data-strict',             cfg.strict ?? '1');
+		s.setAttribute('data-reactions-enabled',  cfg.reactionsEnabled ?? '1');
+		s.setAttribute('data-emit-metadata',      cfg.emitMetadata ?? '0');
+		s.setAttribute('data-input-position',     cfg.inputPosition ?? 'top');
+		s.setAttribute('data-theme',              cfg.theme ?? 'transparent_dark');
+		s.setAttribute('data-lang',               cfg.lang ?? 'en');
+		container!.appendChild(s);
+	}
+
+	// Load Giscus only when the comments section enters the viewport (200px margin).
+	// This avoids an unnecessary network request for readers who don't scroll.
+	// The script src (https://giscus.app/client.js) is allow-listed in the CSP
+	// script-src directive, so no nonce is needed.
+	if ('IntersectionObserver' in window) {
+		const obs = new IntersectionObserver(
+			([entry]) => {
+				if (entry?.isIntersecting) {
+					loadGiscus();
+					obs.disconnect();
+				}
+			},
+			{ rootMargin: '200px' },
+		);
+		obs.observe(container);
+	} else {
+		// Fallback for browsers without IntersectionObserver
+		loadGiscus();
+	}
+</script>
+
+<style>
+	.comments {
+		margin-top: 3rem;
+		padding-top: 1.5rem;
+		border-top: 1px solid var(--color-border);
+	}
+
+	.comments__heading {
+		font-size: var(--text-h4);
+		margin-bottom: 1.25rem;
+	}
+</style>

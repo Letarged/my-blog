@@ -1,0 +1,59 @@
+---
+interface Props {
+	label?: string;
+}
+
+const { label = 'Hint — click to reveal' } = Astro.props;
+---
+
+<details class="spoiler">
+	<summary class="spoiler__summary">
+		<span class="spoiler__label">{label}</span>
+		<span class="spoiler__arrow" aria-hidden="true">›</span>
+	</summary>
+	<div class="spoiler__body">
+		<slot />
+	</div>
+</details>
+
+<style>
+	.spoiler {
+		border: 1px solid var(--border);
+		border-radius: var(--radius-md);
+		margin: 1.5rem 0;
+		background: var(--surface);
+	}
+
+	.spoiler__summary {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		padding: 0.75rem 1rem;
+		cursor: pointer;
+		list-style: none;
+		user-select: none;
+		font-family: 'JetBrains Mono', ui-monospace, monospace;
+		font-size: 0.8125rem;
+		color: var(--text-muted);
+		transition: color 150ms var(--ease-out);
+	}
+
+	.spoiler__summary::-webkit-details-marker { display: none; }
+	.spoiler__summary:hover { color: var(--text-secondary); }
+
+	.spoiler__arrow {
+		font-size: 1rem;
+		transition: transform 150ms var(--ease-out);
+		line-height: 1;
+	}
+
+	.spoiler[open] .spoiler__arrow { transform: rotate(90deg); }
+
+	.spoiler__body {
+		border-top: 1px solid var(--border);
+		padding: 1rem;
+		font-size: 0.9375rem;
+	}
+
+	.spoiler__body :global(p:last-child) { margin-bottom: 0; }
+</style>

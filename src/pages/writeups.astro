@@ -1,0 +1,84 @@
+---
+import { getPublishedByCategory } from '../lib/posts';
+import { SITE_TITLE } from '../consts';
+import BaseHead from '../components/BaseHead.astro';
+import SiteHeader from '../components/ui/SiteHeader.astro';
+import SiteFooter from '../components/ui/SiteFooter.astro';
+import PostCard from '../components/ui/PostCard.astro';
+
+const posts = await getPublishedByCategory('writeup');
+---
+
+<html lang="en">
+	<head>
+		<BaseHead
+			title={`Writeups — ${SITE_TITLE}`}
+			description="HackTheBox, TryHackMe, PortSwigger Labs, and other CTF walkthroughs."
+		/>
+		<link rel="preload" as="font" type="font/woff2" crossorigin href="/fonts/GeistSans-400.woff2" />
+		<link rel="preload" as="font" type="font/woff2" crossorigin href="/fonts/GeistSans-600.woff2" />
+	</head>
+	<body>
+		<SiteHeader />
+
+		<main class="list-page">
+			<h1 class="list-title">Writeups</h1>
+			<p class="list-desc">HackTheBox, TryHackMe, PortSwigger, and other public labs — posted after challenges are retired or publicly disclosed.</p>
+
+			{posts.length === 0 ? (
+				<p class="empty">No published writeups yet.</p>
+			) : (
+				<div class="post-list">
+					{posts.map((post) => <PostCard post={post} />)}
+				</div>
+			)}
+		</main>
+
+		<SiteFooter />
+	</body>
+</html>
+
+<style>
+	.list-page {
+		max-width: 68ch;
+		margin-inline: auto;
+		padding: 3rem 1.5rem 6rem;
+	}
+
+	.list-title {
+		font-size: 1.5rem;
+		font-weight: 600;
+		letter-spacing: -0.02em;
+		color: var(--text-primary);
+		margin: 0 0 0.5rem;
+	}
+
+	.list-desc {
+		font-size: 0.9375rem;
+		color: var(--text-muted);
+		line-height: 1.6;
+		margin: 0 0 2rem;
+	}
+
+	.post-list {
+		border-top: 1px solid var(--border);
+	}
+
+	.empty {
+		color: var(--text-muted);
+		font-size: 0.9375rem;
+	}
+
+	@media (min-width: 1024px) {
+		.list-page {
+			max-width: calc(10rem + 2rem + 68ch);
+			padding: 4rem 2rem 6rem;
+		}
+
+		.list-title,
+		.list-desc,
+		.post-list {
+			margin-left: 12rem;
+		}
+	}
+</style>

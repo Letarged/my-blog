@@ -7,15 +7,33 @@
   },
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build",
+    "build": "node scripts/strip-exif.mjs && astro check && astro build",
+    "postbuild": "pagefind --site dist/client",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "check": "astro check",
+    "generate-types": "wrangler types"
   },
   "dependencies": {
+    "@astrojs/cloudflare": "^13.5.4",
     "@astrojs/mdx": "^5.0.6",
     "@astrojs/rss": "^4.0.18",
     "@astrojs/sitemap": "^3.7.2",
+    "@tailwindcss/vite": "^4.3.0",
     "astro": "^6.3.7",
-    "sharp": "^0.34.3"
+    "sharp": "^0.34.3",
+    "tailwindcss": "^4.3.0",
+    "wrangler": "^4.94.0"
+  },
+  "overrides": {
+    "vite": "^7"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.9",
+    "@fontsource/geist-sans": "^5.2.5",
+    "@fontsource/jetbrains-mono": "^5.2.8",
+    "@fontsource/source-serif-4": "^5.2.9",
+    "pagefind": "^1.5.2",
+    "typescript": "^6.0.3"
   }
 }

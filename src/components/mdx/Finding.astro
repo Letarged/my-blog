@@ -1,0 +1,150 @@
+---
+// All severities use the same accent-tinted pill — severity is communicated
+// through label text only. Pill background opacity scales from info (dimmest)
+// to critical (full accent-soft tint). No hue variation; no traffic-light system.
+
+interface Props {
+	severity: 'info' | 'low' | 'medium' | 'high' | 'critical';
+	title: string;
+	cvss?: number;
+	vector?: string;
+	cwe?: string;
+}
+
+const { severity, title, cvss, vector, cwe } = Astro.props;
+
+const cweId = cwe?.replace('CWE-', '');
+---
+
+<aside
+	class="finding"
+	role="note"
+	aria-label={`${severity} severity finding: ${title}`}
+	data-severity={severity}
+>
+	<div class="finding__header">
+		<span class="finding__pill" aria-hidden="true">
+			{severity.toUpperCase()}
+		</span>
+		<h3 class="finding__title">{title}</h3>
+	</div>
+
+	{(cvss !== undefined || cwe) && (
+		<div class="finding__meta">
+			{cwe && (
+				<span>
+					<a
+						href={`https://cwe.mitre.org/data/definitions/${cweId}.html`}
+						target="_blank"
+						rel="noopener noreferrer"
+						class="finding__meta-link"
+					>{cwe}</a>
+				</span>
+			)}
+			{cwe && cvss !== undefined && <span class="finding__dot" aria-hidden="true">·</span>}
+			{cvss !== undefined && (
+				<span aria-label={`CVSS score ${cvss}`}>CVSS {cvss.toFixed(1)}</span>
+			)}
+			{vector && (
+				<>
+					<span class="finding__dot" aria-hidden="true">·</span>
+					<code class="finding__vector">{vector}</code>
+				</>
+			)}
+		</div>
+	)}
+
+	<div class="finding__body">
+		<slot />
+	</div>
+</aside>
+
+<style>
+	/* Opacity multipliers on the accent-soft (8% tint) base — set via CSS attribute selectors
+	   so no inline style="" attribute is needed (keeps style-src 'self' clean). */
+	.finding[data-severity="info"]     { --pill-opacity: 0.5; }
+	.finding[data-severity="low"]      { --pill-opacity: 0.65; }
+	.finding[data-severity="medium"]   { --pill-opacity: 0.8; }
+	.finding[data-severity="high"]     { --pill-opacity: 0.9; }
+	.finding[data-severity="critical"] { --pill-opacity: 1.0; }
+
+	.finding {
+		background: var(--surface);
+		border-radius: var(--radius-md);
+		padding: 1.5rem 1.75rem;
+		box-shadow: var(--shadow-soft);
+		margin: 2rem 0;
+	}
+
+	.finding__header {
+		display: flex;
+		align-items: baseline;
+		gap: 0.875rem;
+		margin-bottom: 0.625rem;
+		flex-wrap: wrap;
+	}
+
+	.finding__pill {
+		/* opacity applied via CSS variable set inline */
+		background: rgba(74, 106, 142, calc(0.08 * var(--pill-opacity)));
+		color: var(--accent-hover);
+		font-family: 'JetBrains Mono', ui-monospace, monospace;
+		font-size: 0.6875rem;
+		font-weight: 600;
+		letter-spacing: 0.05em;
+		padding: 0.15rem 0.5rem;
+		border-radius: var(--radius-sm);
+		flex-shrink: 0;
+	}
+
+	.finding__title {
+		font-size: 1.125rem;
+		font-weight: 500;
+		letter-spacing: -0.01em;
+		margin: 0;
+		flex: 1;
+		min-width: 0;
+		line-height: 1.4;
+	}
+
+	.finding__meta {
+		display: flex;
+		align-items: center;
+		gap: 0.375rem;
+		font-family: 'JetBrains Mono', ui-monospace, monospace;
+		font-size: 0.75rem;
+		color: var(--text-muted);
+		margin-bottom: 1rem;
+		flex-wrap: wrap;
+	}
+
+	.finding__meta-link {
+		color: var(--text-muted);
+		text-decoration-color: var(--border);
+	}
+
+	.finding__meta-link:hover {
+		color: var(--accent);
+	}
+
+	.finding__dot {
+		opacity: 0.4;
+	}
+
+	.finding__vector {
+		font-size: 0.6875rem;
+		background: none;
+		padding: 0;
+		color: var(--text-muted);
+	}
+
+	.finding__body {
+		font-size: 0.9375rem;
+		line-height: 1.7;
+		color: var(--text-secondary);
+	}
+
+	.finding__body :global(p:last-child) {
+		margin-bottom: 0;
+	}
+</style>

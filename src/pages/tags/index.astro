@@ -1,0 +1,258 @@
+---
+import { getTagsByAxis, type TagSlug } from '../../lib/tags';
+import { getTagPostCounts } from '../../lib/posts';
+import { SITE_TITLE } from '../../consts';
+import BaseHead from '../../components/BaseHead.astro';
+import SiteHeader from '../../components/ui/SiteHeader.astro';
+import SiteFooter from '../../components/ui/SiteFooter.astro';
+
+const counts      = await getTagPostCounts();
+const domainTags  = getTagsByAxis('domain').map(([slug, meta]) => ({
+	slug,
+	meta,
+	count: counts.get(slug as TagSlug) ?? 0,
+}));
+const techniqueTags = getTagsByAxis('technique').map(([slug, meta]) => ({
+	slug,
+	meta,
+	count: counts.get(slug as TagSlug) ?? 0,
+}));
+---
+
+<html lang="en">
+	<head>
+		<BaseHead title={`Tags — ${SITE_TITLE}`} description="All target domains and attack techniques covered on this site." />
+		<link rel="preload" as="font" type="font/woff2" crossorigin href="/fonts/GeistSans-400.woff2" />
+		<link rel="preload" as="font" type="font/woff2" crossorigin href="/fonts/GeistSans-600.woff2" />
+	</head>
+	<body>
+		<SiteHeader />
+
+		<main class="tags-page" data-pagefind-ignore>
+			<div class="tags-header">
+				<h1 class="page-title">Tags</h1>
+				<p class="page-desc">
+					Posts are tagged across two axes: <strong>domain</strong> (what was targeted)
+					and <strong>technique</strong> (how it was attacked).
+				</p>
+			</div>
+
+			<!-- Domain axis -->
+			<section class="axis-section" aria-labelledby="axis-domain">
+				<div class="axis-label" id="axis-domain">
+					<span class="axis-badge axis-badge--domain">Domain</span>
+					<span class="axis-desc">Target area</span>
+				</div>
+
+				<ul class="tag-list" role="list">
+					{domainTags.map(({ slug, meta, count }) => (
+						<li>
+							<a
+								href={`/tags/${slug}`}
+								class:list={['tag-row', { 'tag-row--empty': count === 0 }]}
+								aria-label={`${meta.label} — ${count} ${count === 1 ? 'post' : 'posts'}`}
+							>
+								<span class="tag-row__label">{meta.label}</span>
+								<span class="tag-row__desc">{meta.description}</span>
+								<span class="tag-row__count" aria-hidden="true">
+									{count > 0 ? count : '—'}
+								</span>
+							</a>
+						</li>
+					))}
+				</ul>
+			</section>
+
+			<!-- Technique axis -->
+			<section class="axis-section" aria-labelledby="axis-technique">
+				<div class="axis-label" id="axis-technique">
+					<span class="axis-badge axis-badge--technique">Technique</span>
+					<span class="axis-desc">Attack class</span>
+				</div>
+
+				<ul class="tag-list" role="list">
+					{techniqueTags.map(({ slug, meta, count }) => (
+						<li>
+							<a
+								href={`/tags/${slug}`}
+								class:list={['tag-row', { 'tag-row--empty': count === 0 }]}
+								aria-label={`${meta.label} — ${count} ${count === 1 ? 'post' : 'posts'}`}
+							>
+								<span class="tag-row__label">{meta.label}</span>
+								<span class="tag-row__desc">{meta.description}</span>
+								<span class="tag-row__count" aria-hidden="true">
+									{count > 0 ? count : '—'}
+								</span>
+							</a>
+						</li>
+					))}
+				</ul>
+			</section>
+		</main>
+
+		<SiteFooter />
+	</body>
+</html>
+
+<style>
+	.tags-page {
+		max-width: 68ch;
+		margin-inline: auto;
+		padding: 3rem 1.5rem 6rem;
+	}
+
+	.tags-header {
+		margin-bottom: 3rem;
+	}
+
+	.page-title {
+		font-size: 1.5rem;
+		font-weight: 600;
+		letter-spacing: -0.02em;
+		color: var(--text-primary);
+		margin: 0 0 0.625rem;
+	}
+
+	.page-desc {
+		font-size: 0.9375rem;
+		color: var(--text-muted);
+		margin: 0;
+		line-height: 1.6;
+	}
+
+	.page-desc strong {
+		color: var(--text-secondary);
+		font-weight: 500;
+	}
+
+	/* ── Axis section ─────────────────────────────────────────────────────── */
+
+	.axis-section {
+		margin-bottom: 3rem;
+	}
+
+	.axis-label {
+		display: flex;
+		align-items: center;
+		gap: 0.625rem;
+		margin-bottom: 0.75rem;
+	}
+
+	.axis-badge {
+		font-family: 'JetBrains Mono', ui-monospace, monospace;
+		font-size: 0.625rem;
+		font-weight: 600;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		padding: 0.2rem 0.5rem;
+		border-radius: var(--radius-sm);
+	}
+
+	.axis-badge--domain {
+		background: rgba(74, 106, 142, 0.10);
+		color: var(--accent);
+		border: 1px solid rgba(74, 106, 142, 0.20);
+	}
+
+	.axis-badge--technique {
+		background: rgba(160, 100, 60, 0.08);
+		color: #8a5c2e;
+		border: 1px solid rgba(160, 100, 60, 0.18);
+	}
+
+	.axis-desc {
+		font-family: 'JetBrains Mono', ui-monospace, monospace;
+		font-size: 0.6875rem;
+		color: var(--text-muted);
+		text-transform: uppercase;
+		letter-spacing: 0.06em;
+	}
+
+	/* ── Tag list ─────────────────────────────────────────────────────────── */
+
+	.tag-list {
+		list-style: none;
+		padding: 0;
+		margin: 0;
+		border-top: 1px solid var(--border);
+	}
+
+	.tag-row {
+		display: grid;
+		grid-template-columns: 11rem 1fr 2rem;
+		align-items: baseline;
+		gap: 1rem;
+		padding: 0.75rem 0;
+		border-bottom: 1px solid var(--border);
+		text-decoration: none;
+		transition: opacity 150ms var(--ease-out);
+	}
+
+	.tag-row:hover .tag-row__label {
+		color: var(--accent);
+	}
+
+	.tag-row--empty {
+		opacity: 0.35;
+		pointer-events: none;
+	}
+
+	.tag-row__label {
+		font-family: 'JetBrains Mono', ui-monospace, monospace;
+		font-size: 0.8125rem;
+		font-weight: 500;
+		color: var(--text-primary);
+		transition: color 150ms var(--ease-out);
+		flex-shrink: 0;
+	}
+
+	.tag-row__desc {
+		font-size: 0.8125rem;
+		color: var(--text-muted);
+		line-height: 1.5;
+	}
+
+	.tag-row__count {
+		font-family: 'JetBrains Mono', ui-monospace, monospace;
+		font-size: 0.75rem;
+		color: var(--text-muted);
+		text-align: right;
+	}
+
+	/* ── Responsive ───────────────────────────────────────────────────────── */
+
+	@media (max-width: 600px) {
+		.tag-row {
+			grid-template-columns: 1fr auto;
+			grid-template-rows: auto auto;
+			gap: 0.25rem 0.75rem;
+		}
+
+		.tag-row__label {
+			grid-column: 1;
+			grid-row: 1;
+		}
+
+		.tag-row__count {
+			grid-column: 2;
+			grid-row: 1;
+		}
+
+		.tag-row__desc {
+			grid-column: 1 / -1;
+			grid-row: 2;
+		}
+	}
+
+	@media (min-width: 1024px) {
+		.tags-page {
+			max-width: calc(10rem + 2rem + 68ch);
+			padding: 4rem 2rem 6rem;
+		}
+
+		.tags-header,
+		.axis-section {
+			margin-left: 12rem;
+		}
+	}
+</style>

@@ -1,0 +1,333 @@
+---
+import { TAG_META, type TagSlug } from '../../lib/tags';
+import { getPublishedByTaxonomyTag } from '../../lib/posts';
+import { SITE_TITLE } from '../../consts';
+import BaseHead from '../../components/BaseHead.astro';
+import SiteHeader from '../../components/ui/SiteHeader.astro';
+import SiteFooter from '../../components/ui/SiteFooter.astro';
+
+export async function getStaticPaths() {
+	return (Object.keys(TAG_META) as TagSlug[]).map((slug) => ({
+		params: { tag: slug },
+		props:  { slug },
+	}));
+}
+
+interface Props { slug: TagSlug; }
+const { slug } = Astro.props;
+
+const meta  = TAG_META[slug];
+const posts = await getPublishedByTaxonomyTag(slug);
+
+function formatDate(date: Date): string {
+	return date.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+}
+---
+
+<html lang="en">
+	<head>
+		<BaseHead
+			title={`${meta.label} — ${SITE_TITLE}`}
+			description={meta.description}
+		/>
+		<link rel="preload" as="font" type="font/woff2" crossorigin href="/fonts/GeistSans-400.woff2" />
+		<link rel="preload" as="font" type="font/woff2" crossorigin href="/fonts/GeistSans-600.woff2" />
+	</head>
+	<body>
+		<SiteHeader />
+
+		<main class="tag-page" data-pagefind-ignore>
+			<p class="back">
+				<a href="/tags">← All tags</a>
+			</p>
+
+			<header class="tag-header">
+				<div class="tag-meta-row">
+					<span class:list={['axis-badge', `axis-badge--${meta.axis}`]}>
+						{meta.axis === 'domain' ? 'Domain' : 'Technique'}
+					</span>
+					{meta.ref && (
+						<a
+							href={meta.ref.url}
+							target="_blank"
+							rel="noopener noreferrer"
+							class="ref-link"
+						>{meta.ref.label}</a>
+					)}
+				</div>
+
+				<h1 class="tag-title">{meta.label}</h1>
+				<p class="tag-desc">{meta.description}</p>
+			</header>
+
+			<div class="results-header">
+				<span class="results-count">
+					{posts.length === 0
+						? 'No published posts yet'
+						: `${posts.length} ${posts.length === 1 ? 'post' : 'posts'}`}
+				</span>
+			</div>
+
+			{posts.length > 0 && (
+				<ul class="post-list" role="list">
+					{posts.map((post) => (
+						<li class="post-item">
+							<a href={`/posts/${post.id}`} class="post-link">
+								<div class="post-item__top">
+									<span class:list={['category-badge', `category-badge--${post.data.category}`]}>
+										{post.data.category}
+									</span>
+									<time
+										datetime={post.data.date.toISOString()}
+										class="post-date"
+									>{formatDate(post.data.date)}</time>
+								</div>
+								<h2 class="post-title">{post.data.title}</h2>
+								{post.data.excerpt && (
+									<p class="post-excerpt">{post.data.excerpt}</p>
+								)}
+								<div class="post-tags" aria-label="Tags">
+									{post.data.domainTags.map((t) => (
+										<span class="chip chip--domain">{t}</span>
+									))}
+									{post.data.techniqueTags.map((t) => (
+										<span class="chip chip--technique">{t}</span>
+									))}
+								</div>
+							</a>
+						</li>
+					))}
+				</ul>
+			)}
+		</main>
+
+		<SiteFooter />
+	</body>
+</html>
+
+<style>
+	.tag-page {
+		max-width: 68ch;
+		margin-inline: auto;
+		padding: 3rem 1.5rem 6rem;
+	}
+
+	/* ── Back link ────────────────────────────────────────────────────────── */
+
+	.back {
+		margin: 0 0 1.5rem;
+	}
+
+	.back a {
+		font-family: 'JetBrains Mono', ui-monospace, monospace;
+		font-size: 0.75rem;
+		color: var(--text-muted);
+		text-decoration: none;
+		transition: color 150ms var(--ease-out);
+	}
+
+	.back a:hover {
+		color: var(--accent);
+	}
+
+	/* ── Tag header ───────────────────────────────────────────────────────── */
+
+	.tag-header {
+		margin-bottom: 2.5rem;
+	}
+
+	.tag-meta-row {
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
+		margin-bottom: 0.75rem;
+	}
+
+	.axis-badge {
+		font-family: 'JetBrains Mono', ui-monospace, monospace;
+		font-size: 0.625rem;
+		font-weight: 600;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		padding: 0.2rem 0.5rem;
+		border-radius: var(--radius-sm);
+	}
+
+	.axis-badge--domain {
+		background: rgba(74, 106, 142, 0.10);
+		color: var(--accent);
+		border: 1px solid rgba(74, 106, 142, 0.20);
+	}
+
+	.axis-badge--technique {
+		background: rgba(160, 100, 60, 0.08);
+		color: #8a5c2e;
+		border: 1px solid rgba(160, 100, 60, 0.18);
+	}
+
+	.ref-link {
+		font-family: 'JetBrains Mono', ui-monospace, monospace;
+		font-size: 0.6875rem;
+		color: var(--text-muted);
+		text-decoration-color: var(--border);
+		transition: color 150ms var(--ease-out);
+	}
+
+	.ref-link:hover {
+		color: var(--accent);
+	}
+
+	.tag-title {
+		font-size: 1.5rem;
+		font-weight: 600;
+		letter-spacing: -0.02em;
+		color: var(--text-primary);
+		margin: 0 0 0.625rem;
+	}
+
+	.tag-desc {
+		font-size: 0.9375rem;
+		color: var(--text-muted);
+		line-height: 1.6;
+		margin: 0;
+	}
+
+	/* ── Results header ───────────────────────────────────────────────────── */
+
+	.results-header {
+		margin-bottom: 0.75rem;
+	}
+
+	.results-count {
+		font-family: 'JetBrains Mono', ui-monospace, monospace;
+		font-size: 0.75rem;
+		color: var(--text-muted);
+	}
+
+	/* ── Post list ────────────────────────────────────────────────────────── */
+
+	.post-list {
+		list-style: none;
+		padding: 0;
+		margin: 0;
+		border-top: 1px solid var(--border);
+	}
+
+	.post-item {
+		border-bottom: 1px solid var(--border);
+	}
+
+	.post-link {
+		display: block;
+		padding: 1.125rem 0;
+		text-decoration: none;
+		transition: background-color 150ms var(--ease-out);
+	}
+
+	.post-link:hover .post-title {
+		color: var(--accent);
+	}
+
+	.post-item__top {
+		display: flex;
+		align-items: center;
+		gap: 0.625rem;
+		margin-bottom: 0.375rem;
+	}
+
+	.category-badge {
+		font-family: 'JetBrains Mono', ui-monospace, monospace;
+		font-size: 0.5625rem;
+		font-weight: 600;
+		letter-spacing: 0.07em;
+		text-transform: uppercase;
+		padding: 0.15rem 0.45rem;
+		border-radius: var(--radius-sm);
+	}
+
+	.category-badge--writeup {
+		background: rgba(74, 106, 142, 0.10);
+		color: var(--accent);
+		border: 1px solid rgba(74, 106, 142, 0.18);
+	}
+
+	.category-badge--finding {
+		background: rgba(180, 80, 50, 0.08);
+		color: #954020;
+		border: 1px solid rgba(180, 80, 50, 0.16);
+	}
+
+	.category-badge--note {
+		background: var(--surface);
+		color: var(--text-muted);
+		border: 1px solid var(--border);
+	}
+
+	.post-date {
+		font-family: 'JetBrains Mono', ui-monospace, monospace;
+		font-size: 0.6875rem;
+		color: var(--text-muted);
+	}
+
+	.post-title {
+		font-size: 1rem;
+		font-weight: 500;
+		letter-spacing: -0.01em;
+		color: var(--text-primary);
+		margin: 0 0 0.375rem;
+		line-height: 1.4;
+		transition: color 150ms var(--ease-out);
+	}
+
+	.post-excerpt {
+		font-size: 0.875rem;
+		color: var(--text-muted);
+		line-height: 1.55;
+		margin: 0 0 0.625rem;
+	}
+
+	/* ── Tag chips ────────────────────────────────────────────────────────── */
+
+	.post-tags {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.3125rem;
+	}
+
+	.chip {
+		font-family: 'JetBrains Mono', ui-monospace, monospace;
+		font-size: 0.5625rem;
+		font-weight: 500;
+		letter-spacing: 0.04em;
+		padding: 0.15rem 0.4rem;
+		border-radius: var(--radius-sm);
+	}
+
+	.chip--domain {
+		background: rgba(74, 106, 142, 0.07);
+		color: var(--accent-hover);
+		border: 1px solid rgba(74, 106, 142, 0.14);
+	}
+
+	.chip--technique {
+		background: rgba(160, 100, 60, 0.06);
+		color: #8a5c2e;
+		border: 1px solid rgba(160, 100, 60, 0.14);
+	}
+
+	/* ── Responsive ───────────────────────────────────────────────────────── */
+
+	@media (min-width: 1024px) {
+		.tag-page {
+			max-width: calc(10rem + 2rem + 68ch);
+			padding: 4rem 2rem 6rem;
+		}
+
+		.back,
+		.tag-header,
+		.results-header,
+		.post-list {
+			margin-left: 12rem;
+		}
+	}
+</style>

@@ -1,0 +1,48 @@
+---
+// Minimal footer: copyright + RSS + about
+---
+
+<footer class="site-footer" data-pagefind-ignore>
+	<p>
+		&copy; {new Date().getFullYear()}
+		<span class="sep" aria-hidden="true">·</span>
+		<a href="/rss.xml">RSS</a>
+		<span class="sep" aria-hidden="true">·</span>
+		<a href="/about">About</a>
+		<span class="sep" aria-hidden="true">·</span>
+		<a href="/disclaimer">Disclaimer</a>
+	</p>
+</footer>
+
+<style>
+	.site-footer {
+		border-top: 1px solid var(--border);
+		padding: 1.5rem 2rem;
+		text-align: center;
+	}
+
+	.site-footer p {
+		font-family: 'JetBrains Mono', ui-monospace, monospace;
+		font-size: 0.75rem;
+		color: var(--text-muted);
+		margin: 0;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 0.5rem;
+	}
+
+	.sep {
+		opacity: 0.4;
+	}
+
+	.site-footer a {
+		color: var(--text-muted);
+		text-decoration: none;
+		transition: color 150ms var(--ease-out);
+	}
+
+	.site-footer a:hover {
+		color: var(--accent);
+	}
+</style>

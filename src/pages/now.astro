@@ -1,0 +1,99 @@
+---
+import { SITE_TITLE } from '../consts';
+import BaseHead from '../components/BaseHead.astro';
+import SiteHeader from '../components/ui/SiteHeader.astro';
+import SiteFooter from '../components/ui/SiteFooter.astro';
+
+// Update this manually whenever your focus changes.
+// See https://nownownow.com/about for the /now page convention.
+const lastUpdated = new Date('2026-05-25');
+---
+
+<html lang="en" data-pagefind-ignore="all">
+	<head>
+		<BaseHead title={`Now — ${SITE_TITLE}`} description="What I'm currently focused on." />
+		<link rel="preload" as="font" type="font/woff2" crossorigin href="/fonts/GeistSans-400.woff2" />
+		<link rel="preload" as="font" type="font/woff2" crossorigin href="/fonts/GeistSans-600.woff2" />
+	</head>
+	<body>
+		<SiteHeader />
+
+		<main class="prose-page" data-pagefind-ignore>
+			<h1>Now</h1>
+			<p class="updated">
+				Updated&nbsp;
+				<time datetime={lastUpdated.toISOString()}>
+					{lastUpdated.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+				</time>
+			</p>
+
+			<p>
+				Currently working through the HTB Pro Labs track and writing up retired machines.
+				Studying for OSCP. Reading <em>The Web Application Hacker's Handbook</em>.
+			</p>
+			<p>
+				This page is updated irregularly. The idea comes from&nbsp;<a
+					href="https://nownownow.com/about"
+					target="_blank"
+					rel="noopener noreferrer"
+				>Derek Sivers</a>.
+			</p>
+		</main>
+
+		<SiteFooter />
+	</body>
+</html>
+
+<style>
+	.prose-page {
+		max-width: 68ch;
+		margin-inline: auto;
+		padding: 3rem 1.5rem 6rem;
+	}
+
+	.prose-page h1 {
+		font-size: 1.5rem;
+		font-weight: 600;
+		letter-spacing: -0.02em;
+		color: var(--text-primary);
+		margin: 0 0 0.5rem;
+	}
+
+	.updated {
+		font-family: 'JetBrains Mono', ui-monospace, monospace;
+		font-size: 0.75rem;
+		color: var(--text-muted);
+		margin: 0 0 2rem;
+	}
+
+	.prose-page p {
+		font-size: 1rem;
+		color: var(--text-secondary);
+		line-height: 1.7;
+		margin: 0 0 1.25rem;
+	}
+
+	.prose-page a {
+		color: var(--accent);
+		text-underline-offset: 3px;
+		text-decoration-thickness: 1px;
+	}
+
+	.prose-page a:hover {
+		color: var(--accent-hover);
+	}
+
+	@media (min-width: 1024px) {
+		.prose-page {
+			max-width: calc(10rem + 2rem + 68ch);
+			padding: 4rem 2rem 6rem;
+		}
+
+		.prose-page h1,
+		.updated,
+		.prose-page p {
+			margin-left: 12rem;
+			max-width: 68ch;
+		}
+	}
+</style>

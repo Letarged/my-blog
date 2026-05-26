@@ -1,0 +1,80 @@
+---
+import { SITE_TITLE } from '../consts';
+import BaseHead from '../components/BaseHead.astro';
+import SiteHeader from '../components/ui/SiteHeader.astro';
+import SiteFooter from '../components/ui/SiteFooter.astro';
+---
+
+<html lang="en">
+	<head>
+		<BaseHead title={`404 — ${SITE_TITLE}`} description="Page not found." />
+		<link rel="preload" as="font" type="font/woff2" crossorigin href="/fonts/GeistSans-400.woff2" />
+		<link rel="preload" as="font" type="font/woff2" crossorigin href="/fonts/GeistSans-600.woff2" />
+	</head>
+	<body>
+		<SiteHeader />
+
+		<main class="not-found" data-pagefind-ignore>
+			<p class="error-code">404</p>
+			<h1>Page not found</h1>
+			<p>That path doesn't exist. <a href="/">Return home →</a></p>
+		</main>
+
+		<SiteFooter />
+	</body>
+</html>
+
+<style>
+	.not-found {
+		max-width: 68ch;
+		margin-inline: auto;
+		padding: 6rem 1.5rem 8rem;
+	}
+
+	.error-code {
+		font-family: 'JetBrains Mono', ui-monospace, monospace;
+		font-size: 4rem;
+		font-weight: 600;
+		color: var(--border);
+		margin: 0 0 0.5rem;
+		line-height: 1;
+		letter-spacing: -0.04em;
+	}
+
+	.not-found h1 {
+		font-size: 1.5rem;
+		font-weight: 600;
+		letter-spacing: -0.02em;
+		color: var(--text-primary);
+		margin: 0 0 1rem;
+	}
+
+	.not-found p:last-child {
+		font-size: 1rem;
+		color: var(--text-secondary);
+		margin: 0;
+	}
+
+	.not-found a {
+		color: var(--accent);
+		text-underline-offset: 3px;
+		text-decoration-thickness: 1px;
+	}
+
+	.not-found a:hover {
+		color: var(--accent-hover);
+	}
+
+	@media (min-width: 1024px) {
+		.not-found {
+			max-width: calc(10rem + 2rem + 68ch);
+			padding: 8rem 2rem 10rem;
+		}
+
+		.error-code,
+		.not-found h1,
+		.not-found p {
+			margin-left: 12rem;
+		}
+	}
+</style>

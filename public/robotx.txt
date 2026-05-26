@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /drafts/
+
+Sitemap: https://c0rvex.com/sitemap-index.xml

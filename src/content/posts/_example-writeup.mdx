@@ -1,0 +1,70 @@
+---
+title: "Lab: Example Machine"
+date: 2026-05-26
+category: writeup
+difficulty: easy
+box_status: retired
+domainTags: [linux, web]
+techniqueTags: [sqli, privesc]
+excerpt: "A walkthrough of the Example lab — SQLi to foothold, then SUID abuse for root."
+draft: false
+---
+
+## Overview
+
+Retired lab machine — `easy` difficulty, Linux target.
+
+IP: `10.10.x.x` | OS: Linux | Rating: Easy
+
+---
+
+## Recon
+
+```bash filename="initial.sh"
+nmap -sV -sC -p- 10.10.x.x -oA scans/initial
+```
+
+Open ports: 22 (SSH), 80 (HTTP).
+
+<Figure
+  src="/images/covers/placeholder.png"
+  alt="Nmap scan results showing open ports 22 and 80"
+  caption="Initial nmap output — two open ports"
+/>
+
+---
+
+## Foothold
+
+<Callout type="note">
+Always check HTTP response headers early — version banners are often revealing.
+</Callout>
+
+The login form at `/login` is vulnerable to UNION-based SQLi.
+
+<Finding severity="high" title="SQLi in login endpoint" cvss={8.1}
+         vector="CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:N" cwe="CWE-89">
+The `username` parameter is passed directly into a SQL query without
+parameterisation. An attacker can extract the full `users` table via
+`UNION SELECT`.
+</Finding>
+
+<Spoiler label="Payload hint">
+```sql
+' UNION SELECT 1,username,password FROM users-- -
+```
+</Spoiler>
+
+---
+
+## Privilege Escalation
+
+<Callout type="opsec">
+Replace `target.htb` with the actual lab IP — never publish real infrastructure details.
+</Callout>
+
+Found a SUID binary at `/usr/local/bin/example`. GTFObins has an entry.
+
+```bash caption="Root shell obtained via SUID binary"
+/usr/local/bin/example -p
+```

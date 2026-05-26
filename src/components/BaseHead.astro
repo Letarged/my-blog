@@ -2,21 +2,23 @@
 // Import the global.css file here so that it is included on
 // all pages through the use of the <BaseHead /> component.
 import '../styles/global.css';
-import type { ImageMetadata } from 'astro';
-import FallbackImage from '../assets/blog-placeholder-1.jpg';
 import { SITE_TITLE } from '../consts';
-import { Font } from 'astro:assets';
 
 interface Props {
 	title: string;
 	description: string;
-	image?: ImageMetadata;
+	/** Absolute URL or root-relative path to the OG image. */
+	image?: string;
 }
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 
-const { title, description, image = FallbackImage } = Astro.props;
+const { title, description, image = '/favicon.svg' } = Astro.props;
 ---
+
+<!-- Theme initialisation — MUST run before any CSS to prevent flash.
+     No async/defer: this is intentionally blocking. -->
+<script is:inline src="/theme-init.js"></script>
 
 <!-- Global Metadata -->
 <meta charset="utf-8" />
@@ -32,7 +34,12 @@ const { title, description, image = FallbackImage } = Astro.props;
 />
 <meta name="generator" content={Astro.generator} />
 
-<Font cssVariable="--font-atkinson" preload />
+<!-- Self-hosted font preloads — served from /fonts/ with no third-party requests -->
+<link rel="preload" as="font" type="font/woff2" crossorigin href="/fonts/GeistSans-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="/fonts/GeistSans-600.woff2" />
+
+<!-- Theme toggle handler — deferred so it runs after DOM is ready -->
+<script is:inline src="/theme-toggle.js" defer></script>
 
 <!-- Canonical URL -->
 <link rel="canonical" href={canonicalURL} />
@@ -47,11 +54,11 @@ const { title, description, image = FallbackImage } = Astro.props;
 <meta property="og:url" content={Astro.url} />
 <meta property="og:title" content={title} />
 <meta property="og:description" content={description} />
-<meta property="og:image" content={new URL(image.src, Astro.url)} />
+<meta property="og:image" content={new URL(image, Astro.site)} />
 
 <!-- Twitter -->
 <meta property="twitter:card" content="summary_large_image" />
 <meta property="twitter:url" content={Astro.url} />
 <meta property="twitter:title" content={title} />
 <meta property="twitter:description" content={description} />
-<meta property="twitter:image" content={new URL(image.src, Astro.url)} />
+<meta property="twitter:image" content={new URL(image, Astro.site)} />
